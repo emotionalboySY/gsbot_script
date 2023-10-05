@@ -1025,6 +1025,140 @@ app.get('/expHistory/:name', async (req, res) => {
 	}
 });
 
+app.get('/royal/:iteration', async (req, res) => {
+	let iteration = Number(req.params.iteration);
+	let result = {};
+	
+	let royal_list = [
+	{ index: 0, cumulativeProb: 0.025, name: "[스페셜 라벨] 꿈의 데뷔", time: 0 },
+	{ index: 1, cumulativeProb: 0.055, name: "[스페셜 라벨] 꿈의 콘서트", time: 0 },
+	{ index: 2, cumulativeProb: 0.087, name: "[스페셜 라벨] 콘서트 라인업", time: 0 },
+	{ index: 3, cumulativeProb: 0.119, name: "[스페셜 라벨] 인기 스타/드림 스타", time: 0 },
+	{ index: 4, cumulativeProb: 0.150, name: "[스페셜 라벨] 드림 리본", time: 0 },
+	{ index: 5, cumulativeProb: 0.195, name: "잿바람 흔적/칼바람 흔적", time: 0 },
+	{ index: 6, cumulativeProb: 0.235, name: "고요한 전설/적막한 전설", time: 0 },
+	{ index: 7, cumulativeProb: 0.270, name: "빛오름 전설/빛오름 신화", time: 0 },
+	{ index: 8, cumulativeProb: 0.320, name: "적막한 유적", time: 0 },
+	{ index: 9, cumulativeProb: 0.350, name: "스러진 황야", time: 0 },
+	{ index: 10, cumulativeProb: 0.365, name: "고요한 순간", time: 0 },
+	{ index: 11, cumulativeProb: 0.405, name: "블랙 클로버/블랙 레이스", time: 0 },
+	{ index: 12, cumulativeProb: 0.440, name: "정결한 품격/고결한 품격", time: 0 },
+	{ index: 13, cumulativeProb: 0.490, name: "품격 신발/품격 구두", time: 0 },
+	{ index: 14, cumulativeProb: 0.535, name: "저택의 품격", time: 0 },
+	{ index: 15, cumulativeProb: 0.550, name: "오버핏 비치가운", time: 0 },
+	{ index: 16, cumulativeProb: 0.600, name: "막내토끼 모자", time: 0 },
+	{ index: 17, cumulativeProb: 0.650, name: "스타 탄생", time: 0 },
+	{ index: 18, cumulativeProb: 0.700, name: "심쿵 안대", time: 0 },
+	{ index: 19, cumulativeProb: 0.750, name: "미니바니 팬츠", time: 0 },
+	{ index: 20, cumulativeProb: 0.800, name: "파스텔 도트티", time: 0 },
+	{ index: 21, cumulativeProb: 0.850, name: "[30일] 꿈의 콘서트 말풍선반지 교환권", time: 0 },
+	{ index: 22, cumulativeProb: 0.900, name: "[30일] 꿈의 콘서트 명찰반지 교환권", time: 0 },
+	{ index: 23, cumulativeProb: 0.950, name: "그림자 나무 꽃", time: 0 },
+	{ index: 24, cumulativeProb: 1.000, name: "스카우터", time: 0 },
+];
+	
+	if(iteration > 1000000) {
+		result = {
+			success: false,
+			result: encodeURIComponent("로얄스타일 시뮬레이션은 서버 과부하 방지를 위해 1,000,000회까지 가능합니다.")
+		};
+	}
+	else {
+		for(let i = 0; i < iteration; i++) {
+			let pick = Math.random();
+			
+			for(const probConfig of royal_list) {
+				if(pick < probConfig.cumulativeProb) {
+					royal_list[probConfig.index].time++;
+					break;
+				}
+			}
+		}
+		
+		let iteration_locale = AddComma(iteration);
+		let royal_list_time_locale;
+		let cost = AddComma(iteration * 2200);
+		
+		let message = `< 메이플 로얄 스타일 결과 >\n업데이트 시점: 230921\n시도 횟수: ${iteration}회\n\n`;
+		
+		for(let i = 0; i < royal_list.length; i++) {
+			if(royal_list[i].time != 0) {
+				royal_list_time_locale = AddComma(royal_list[i].time);
+				message = `${message}${royal_list[i].name}: ${royal_list_time_locale}회\n`;
+			}
+		}
+		
+		message = `${message}\n총 사용 캐시: ${cost}원`;
+		
+		result = {
+			success: true,
+			result: encodeURIComponent(message)
+		};
+	}
+	
+	res.status(200).json(result);
+});
+
+app.get('/wonder/:iteration', async (req, res) => {
+	let iteration = Number(req.params.iteration);
+	let result = {};
+	
+	let wonder_list = [
+	{ index: 0, cumulativeProb: 0.0332, name: "[원더 블랙] 꿈나라 르밍", time: 0 },
+	{ index: 1, cumulativeProb: 0.0664, name: "[원더 블랙] 꿈나라 벼링", time: 0 },
+	{ index: 2, cumulativeProb: 0.0996, name: "[원더 블랙] 꿈나라 달링", time: 0 },
+	{ index: 3, cumulativeProb: 0.2196, name: "쿠키베어", time: 0 },
+	{ index: 4, cumulativeProb: 0.3396, name: "쁘띠 레인", time: 0 },
+	{ index: 5, cumulativeProb: 0.4596, name: "바닐라콘", time: 0 },
+	{ index: 6, cumulativeProb: 0.5796, name: "초코콘", time: 0 },
+	{ index: 7, cumulativeProb: 0.6996, name: "딸기콘", time: 0 },
+	{ index: 8, cumulativeProb: 0.8698, name: "고농축 프리미엄 생명의 물", time: 0 },
+	{ index: 9, cumulativeProb: 1, name: "오가닉 원더 쿠키", time: 0 }
+];
+	
+	if(iteration > 1000000) {
+		result = {
+			success: false,
+			result: encodeURIComponent("위습의 원더베리 시뮬레이션은 서버 과부하 방지를 위해 1,000,000회까지 가능합니다.")
+		};
+	}
+	else {
+		for(let i = 0; i < iteration; i++) {
+			let pick = Math.random();
+			
+			for(const probConfig of wonder_list) {
+				if(pick < probConfig.cumulativeProb) {
+					wonder_list[probConfig.index].time++;
+					break;
+				}
+			}
+		}
+		
+		let iteration_locale = AddComma(iteration);
+		let wonder_list_time_locale;
+		let cost = AddComma(iteration * 5400);
+		
+		let message = `< 위습의 원더베리 결과 >\n업데이트 시점: 230727\n시도 횟수: ${iteration}회\n\n`;
+		
+		for(let i = 0; i < wonder_list.length; i++) {
+			if(wonder_list[i].time != 0) {
+				wonder_list_time_locale = AddComma(wonder_list[i].time);
+				message = `${message}${wonder_list[i].name}: ${wonder_list_time_locale}회\n`;
+			}
+		}
+		
+		message = `${message}\n총 사용 캐시: ${cost}원`;
+		
+		result = {
+			success: true,
+			result: encodeURIComponent(message)
+		};
+	}
+	
+	res.status(200).json(result);
+	
+});
+
 function AddComma(data_value) {
 	var txtNumber = '' + data_value; // 입력된 값을 문자열 변수에 저장합니다.
 
