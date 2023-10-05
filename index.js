@@ -1,4 +1,8 @@
 const express = require('express');
+const puppeteer = require('puppeteer');
+const axios = require('axios');
+const cheerio = require('cheerio');
+
 const app = express();
 
 app.use(express.json());
@@ -386,7 +390,7 @@ app.get('/boss/:diff/:name', (req, res) => {
 				switch (diff) {
 					case '노말':
 					case '노멀':
-						content = '<진 힐라(노멀) 정보>\n\n입장 가능 레벨: 250\n\n- 공통\n몬스터 레벨: 250\n아케인 포스: 900\n방어율: 300%\n\n- 페이즈 1\n체력: 22조\n\n- 페이즈 2\n체력: 22조\n\n- 페이즈 3\n체력: 22조\n\n- 페이즈 4\n체력: 22조\n\n\n';
+						content = '<진 힐라(노멀) 정보>\n\n입장 가능 레벨: 250\n\n- 공통\n몬스터 레벨: 250\n아케인 포스: 820\n방어율: 300%\n\n- 페이즈 1\n체력: 22조\n\n- 페이즈 2\n체력: 22조\n\n- 페이즈 3\n체력: 22조\n\n- 페이즈 4\n체력: 22조\n\n\n';
 						content = content + '<진 힐라(노멀) 주요 보상>\n\n결정석 가격: 148,112,376메소\n\n수상한 에디셔널 큐브: 9개\n솔 에르다의 기운: 70\n\n[아케인] 아케인셰이드 장비 상자\n[여명] 데이브레이크 펜던트\n홍옥의 보스 반지 상자 (중급)';
 						break;
 					case '하드':
@@ -432,7 +436,7 @@ app.get('/boss/:diff/:name', (req, res) => {
 					case '익스트림':
 					case '익스':
 						content = '<감시자 칼로스(익스트림) 정보>\n\n입장 가능 레벨: 265\n\n- 공통\n- 몬스터 레벨: 285\n- 어센틱 포스: 440\n- 방어율: 380%\n\n- 페이즈 1\n체력: 6,720조\n\n- 페이즈 2\n체력: 2경 4,000조\n\n\n';
-						content = content + '<감시자 칼로스(카오스) 주요 보상>\n\n결정석 가격: 1,200,000,000메소\n\n결정석 가격 이외 정보 없음(클리어 기록 없음)';
+						content = content + '<감시자 칼로스(익스트림) 주요 보상>\n\n결정석 가격: 1,200,000,000메소\n\n결정석 가격 이외 정보 없음(클리어 기록 없음)';
 						break;
 				}
 				break;
@@ -898,6 +902,127 @@ app.get('/starForce/:level/:start/:goal/:isStarCatch/:event/:unBreak', (req, res
 	res.status(200).json({
 		result: encodeURIComponent(`${successM}\n\n${content}`)
 	});
+});
+
+app.get('/ggSync/:name', async (req, res) => {
+	const { name } = req.params;
+	
+	const browser = await puppeteer.launch({
+		headless: "new",
+		args: ['--no-sandbox', '--disable-setuid-sandbox']
+	});
+	const page = await browser.newPage();
+	
+	const url = `https://maple.gg/u/${name}`;
+	console.log(url);
+	
+	try {
+		await page.goto(url);
+		
+		await page.click("#btn-sync");
+		
+		await page.waitForFunction(
+			'document.readyState === "complete"',
+			{ timeout: 30000}
+		);
+		
+		console.log("Page has been refreshed!");
+		res.status(200).json({
+			success: true,
+		});
+	} catch(e) {
+		res.status(200).json({
+			success: false,
+			result: e
+		});
+	} finally {
+		await browser.close();
+	}
+});
+
+app.get('/expHistory/:name', async (req, res) => {
+	const { name } = req.params;
+	
+	try {
+		const url = `https://maple.gg/u/${name}`;
+		console.log(`expHistories: ${url}`);
+		
+		const response = await axios.get(url);
+		
+		const html = response.data;
+		const $ = cheerio.load(html);
+		
+		let targetScript = null;
+		$('script').each((index, element) => {
+			const scriptContent = $(element).html();
+			if (scriptContent && scriptContent.includes('bindto: \'#exp-chart\'')) {
+				targetScript = scriptContent;
+				return false;
+			}
+		});
+		
+		if(targetScript) {
+			let hasHistory = false;
+			
+			const expHistoriesMatch = targetScript.match(/var expHistories = (\[.*?\]);/);
+			const expHistoryLabelsMatch = targetScript.match(/var expHistoryLabels = (\[.*?\]);/);
+			
+			let expHistories, expHistoryLabels;
+			
+			if(expHistoriesMatch && expHistoriesMatch[1]) {
+				hasHistory = true;
+				expHistories = JSON.parse(expHistoriesMatch[1]).reverse();
+			}
+			
+			if (expHistoryLabelsMatch && expHistoryLabelsMatch[1]) {
+				hasHistory = true;
+				expHistoryLabels = JSON.parse(expHistoryLabelsMatch[1]);
+			}
+			
+			if(hasHistory) {
+				let resultData = [];
+			
+				for(let i = 0; i < expHistories.length; i++) {
+					let date = expHistories[i].date;
+					let level = expHistoryLabels[i].level;
+					let step = expHistoryLabels[i].exp;
+					resultData.push({
+						date: date,
+						level: level,
+						step: step
+					});
+				}
+				
+				let message = `<[${name}]의 경험치 히스토리>`;
+				
+				for(let i = 0; i < resultData.length; i++) {
+					message = `${message}\n${resultData[i].date}: Lv${resultData[i].level} ${resultData[i].step}%`;
+				}
+				
+				res.status(200).json({
+					success: true,
+					result: encodeURIComponent(message)
+				});
+			}
+			else {
+				res.status(200).json({
+					success: false,
+					result: "경험치 히스토리가 존재하지 않습니다."
+				});
+			}
+		} else {    
+			res.status(200).json({
+				success: false,
+				result: "캐릭터 정보가 없거나, maple.gg에서 조회되지 않았습니다. 다시 시도해 주세요.\n\n(공식 홈페이지와의 데이터 동기화가 이루어지지 않았을 가능성도 있습니다.)"
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(200).json({
+			success: false,
+			result : "봇 서버 오류입니다. 관리자에게 \"/건의\" 명령어를 통해 문의해 주세요."
+		});
+	}
 });
 
 function AddComma(data_value) {
