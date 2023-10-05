@@ -1159,6 +1159,127 @@ app.get('/wonder/:iteration', async (req, res) => {
 	
 });
 
+app.get('/symbol1/:start/:goal', async (req, res) => {
+	let start = Number(req.params.start);
+	let goal = Number(req.params.goal);
+	
+	let result = {};
+	let message = "";
+	
+	if (start < 1 || start > 19 || goal < 2 || goal > 20 || start >= goal) {
+		result = {
+			success: false,
+			reault: encodeURIComponent("강화가 가능한 범위를 벗어나는 수치를 입력하였습니다.\n다시 시도해 주세요.")
+		};
+	} else {
+		let start_arc = start;
+		let start_aut = start;
+		let goal_arc = goal;
+		let goal_aut = goal;
+		
+		let isAuthentic = true;
+		let isOutofBound = false;
+		
+		if(start_aut >= 11) {
+			isAuthentic = false;
+		}
+		
+		if(goal_aut > 11) {
+			isOutofBound = true;
+			goal_aut = 11;
+		}
+		
+		let symbol_cost_yeoro = 0;
+		let symbol_cost_chuchu = 0;
+		let symbol_cost_aut = 0;
+		
+		let meso_cost_arc_yeoro = 0;
+		let meso_cost_arc_chuchu = 0;
+		let meso_cost_arc_lecheln = 0;
+		let meso_cost_arc_arcana = 0;
+		let meso_cost_arc_morass = 0;
+		let meso_cost_arc_esfera = 0;
+		
+		let meso_cost_aut_cernium = 0;
+		let meso_cost_aut_arcs = 0;
+		let meso_cost_aut_odium = 0;
+		let meso_cost_aut_dwk = 0;
+		let meso_cost_aut_arteria = 0;
+		let meso_cost_aut_carcion = 0;
+		
+		for(let i = start_arc; i < goal_arc; i++) {
+			if(i != 1) {
+				symbol_cost_yeoro += Math.pow(i, 2) + 11;
+				meso_cost_arc_yeoro += (Math.floor((Math.pow(i, 3) * 0.1) + (Math.pow(i, 2) * 8) + (i * 1.1) + 88) * 10000);
+			}
+			symbol_cost_chuchu += Math.pow(i, 2) + 11;
+            meso_cost_arc_chuchu += (Math.floor((Math.pow(i, 3) * 0.1) + (Math.pow(i, 2) * 10) + (i * 1.1) + 110) * 10000);
+            meso_cost_arc_lecheln += (Math.floor((Math.pow(i, 3) * 0.1) + (Math.pow(i, 2) * 12) + (i * 1.1) + 132) * 10000);
+            meso_cost_arc_arcana += (Math.floor((Math.pow(i, 3) * 0.1) + (Math.pow(i, 2) * 14) + (i * 1.1) + 154) * 10000);
+            meso_cost_arc_morass += (Math.floor((Math.pow(i, 3) * 0.1) + (Math.pow(i, 2) * 16) + (i * 1.1) + 176) * 10000);
+            meso_cost_arc_esfera += (Math.floor((Math.pow(i, 3) * 0.1) + (Math.pow(i, 2) * 18) + (i * 1.1) + 198) * 10000);
+		}
+		
+		symbol_cost_yeoro = AddComma(symbol_cost_yeoro);
+		symbol_cost_chuchu = AddComma(symbol_cost_chuchu);
+        meso_cost_arc_yeoro = AddComma(meso_cost_arc_yeoro);
+        meso_cost_arc_chuchu = AddComma(meso_cost_arc_chuchu);
+        meso_cost_arc_lecheln = AddComma(meso_cost_arc_lecheln);
+        meso_cost_arc_arcana = AddComma(meso_cost_arc_arcana);
+        meso_cost_arc_morass = AddComma(meso_cost_arc_morass);
+        meso_cost_arc_esfera = AddComma(meso_cost_arc_esfera);
+		
+		message = `< 심볼 비용 계산기 결과 >\n기능: 1번 / 특정 레벨부터 특정 레벨까지 모든 심볼의 강화 비용 및 요구 심볼 갯수 계산\n\n`;
+		message = `${message}- 아케인 심볼 -\n[소멸의 여로]\n요구 심볼 수: ${symbol_cost_yeoro}개\n강화 비용: ${meso_cost_arc_yeoro}메소\n\n`;
+		message = `${message}[츄츄 아일랜드]\n요구 심볼 수: ${symbol_cost_chuchu}개(츄츄 이후 심볼 수 동일)\n강화 비용: ${meso_cost_arc_chuchu}메소\n\n`;
+		message = `${message}[꿈의 도시 레헬른]\n강화 비용: ${meso_cost_arc_lecheln}메소\n\n`;
+		message = `${message}[신비의 숲 아르카나]\n강화 비용: ${meso_cost_arc_arcana}메소\n\n`;
+		message = `${message}[기억의 늪 모라스]\n강화 비용: ${meso_cost_arc_morass}메소\n\n`;
+		message = `${message}[태초의 바다 에스페라]\n강화 비용: ${meso_cost_arc_esfera}메소\n\n`;
+		
+		if(isAuthentic) {
+			for(let i = start_aut; i < goal_aut; i++) {
+                symbol_cost_aut += ((9 * Math.pow(i, 2)) + (20 * i));
+                meso_cost_aut_cernium += (Math.floor((Math.pow(i, 3) * (-5.4)) + (Math.pow(i, 2) * 106.8) + (i * 264)) * 100000);
+                meso_cost_aut_arcs += (Math.floor((Math.pow(i, 3) * (-5.4)) + (Math.pow(i, 2) * 123) + (i * 300)) * 100000);
+                meso_cost_aut_odium += (Math.floor((Math.pow(i, 3) * (-5.4)) + (Math.pow(i, 2) * 139.2) + (i * 336)) * 100000);
+                meso_cost_aut_dwk += (Math.floor((Math.pow(i, 3) * (-5.4)) + (Math.pow(i, 2) * 155.4) + (i * 372)) * 100000);
+                meso_cost_aut_arteria += (Math.floor((Math.pow(i, 3) * (-5.4)) + (Math.pow(i, 2) * 171.6) + (i * 408)) * 100000);
+                meso_cost_aut_carcion += (Math.floor((Math.pow(i, 3) * (-5.4)) + (Math.pow(i, 2) * 187.8) + (i * 444)) * 100000);
+			}
+			
+			symbol_cost_aut = AddComma(symbol_cost_aut);
+            meso_cost_aut_cernium = AddComma(meso_cost_aut_cernium);
+            meso_cost_aut_arcs = AddComma(meso_cost_aut_arcs);
+            meso_cost_aut_odium = AddComma(meso_cost_aut_odium);
+            meso_cost_aut_dwk = AddComma(meso_cost_aut_dwk);
+            meso_cost_aut_arteria = AddComma(meso_cost_aut_arteria);
+            meso_cost_aut_carcion = AddComma(meso_cost_aut_carcion);
+			
+			message = `${message}\n- 어센틱 심볼 -\n\n`;
+			if(isOutofBound) {
+				message = `${message}(목표 레벨이 어센틱 심볼의 최대 레벨을 초과하여 최대 레벨인 11레벨까지로 조정되었습니다.)\n\n`;
+			}
+			message = `${message}요구 심볼 수(공통): ${symbol_cost_aut}개\n\n`;
+			message = `${message}[신의 도시 세르니움]\n강화 비용: ${meso_cost_aut_cernium}메소\n\n`;
+			message = `${message}[호텔 아르크스]\n강화 비용: ${meso_cost_aut_arcs}메소\n\n`;
+			message = `${message}[눈을 뜬 실험실 오디움]\n강화 비용: ${meso_cost_aut_odium}메소\n\n`;
+			message = `${message}[죄인들의 낙원 도원경]\n강화 비용: ${meso_cost_aut_dwk}메소\n\n`;
+			message = `${message}[움직이는 요새 아르테리아]\n강화 비용: ${meso_cost_aut_arteria}메소\n\n`;
+			message = `${message}[생명의 요람 카르시온]\n강화 비용: ${meso_cost_aut_carcion}메소\n\n`;
+		} else {
+			message = `${message}\n- 어센틱 심볼 -\n\n입력된 구간 계산 불가`;
+		}
+		
+		result = {
+			success: true,
+			result: encodeURIComponent(message)
+		};
+	}
+	
+	res.status(200).json(result);
+});
+
 function AddComma(data_value) {
 	var txtNumber = '' + data_value; // 입력된 값을 문자열 변수에 저장합니다.
 
