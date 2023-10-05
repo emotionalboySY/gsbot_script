@@ -1280,6 +1280,148 @@ app.get('/symbol1/:start/:goal', async (req, res) => {
 	res.status(200).json(result);
 });
 
+app.get('/symbol2/:symbolType/:curLev/:curAmount/:goalLev', async (req, res) => {
+	let symbolType = req.params.symbolType;
+	let curLev = Number(req.params.curLev);
+	let curAmount = Number(req.params.curAmount);
+	let goalLev = Number(req.params.goalLev);
+	
+	let result = {};
+	
+	const symbol_data = [
+		{ index: ["여로"], name: "소멸의 여로", data: [8, 88] },
+		{ index: ["츄츄"], name: "츄츄 아일랜드", data: [10, 110] },
+		{ index: ["레헬른", "레헬"], name: "꿈의 도시 레헬른", data: [12, 132] },
+		{ index: ["아르카나", "알카"], name: "신비의 숲 아르카나", data: [14, 154] },
+		{ index: ["모라스"], name: "기억의 늪 모라스", data: [16, 176] },
+		{ index: ["에스페라", "에페"], name: "태초의 바다 에스페라", data: [18, 198] },
+		{ index: ["세르니움", "세르"], name: "신의 도시 세르니움", data: [106.8, 264] },
+		{ index: ["아르크스", "호텔"], name: "호텔 아르크스", data: [106.8, 264] },
+		{ index: ["오디움"], name: "눈을 뜬 실험실 오디움", data: [106.8, 264] },
+		{ index: ["도원경"], name: "죄인들의 낙원 도원경", data: [106.8, 264] },
+		{ index: ["아르테리아"], name: "움직이는 요새 아르테리아", data: [106.8, 264] },
+		{ index: ["카르시온"], name: "생명의 요람 카르시온", data: [106.8, 264] }
+	];
+	
+	const all_symbol_name = ["여로", "츄츄", "레헬른", "레헬", "아르카나", "알카", "모라스", "에스페라", "에페", "세르니움", "세르", "아르크스", "호텔", "오디움", "도원경", "아르테리아", "카르시온"];
+	const aut_symbol_name = ["세르니움", "세르", "아르크스", "호텔", "오디움", "도원경", "아르테리아", "카르시온"];
+	
+	if(!all_symbol_name.includes(symbolType)) {
+		result = {
+			success: false,
+			result: encodeURIComponent("유효한 심볼 이름이 아닙니다. 아래 심볼 중 하나의 이름을 입력해 주세요.\n\n여로/츄츄/레헬른/레헬/아르카나/알카/모라스/에스페라/에페/세르니움/세르/아르크스/호텔/오디움/도원경/아르테리아/카르시온")
+		};
+	}
+	if(symbolType == "여로" && curLev == 1) {
+		result = {
+			success: false,
+			result: encodeURIComponent("소멸의 여로 심볼은 스토리 완료 후 2레벨 심볼을 지급받기 때문에 시작 레벨이 2 이상이어야 합니다.")
+		};
+	} else if (curLev < 1 || curLev > 19 || goalLev > 20 || curLev >= goalLev) {
+		result = {
+			success: false,
+			result: encodeURIComponent("강화가 가능한 범위를 벗어나는 수치를 입력하였습니다.")
+		};
+	} else if (aut_symbol_name.includes(symbolType) && (curLev > 10 || goalLev > 11)) {
+		result = {
+			success: false,
+			result: encodeURIComponent("강화가 가능한 범위를 벗어나는 수치를 입력하였습니다.")
+		};
+	} else {
+		let symbol_cost = 0;
+		let meso_cost = 0;
+		const matchedSymbol = symbol_data.find(symbol => symbol.index.includes(symbolType));
+		for(let i = curLev; i < goalLev; i++) {
+			if(aut_symbol_name.includes(symbolType)) {
+				symbol_cost += ((9 * Math.pow(i, 2)) + (20 * i));
+				meso_cost += (Math.floor((Math.pow(i, 3) * -5.4) + (Math.pow(i, 2) * matchedSymbol.data[0]) + (i * matchedSymbol.data[1])) * 100000);
+			} else {
+				symbol_cost += (Math.pow(i, 2) + 11);
+				meso_cost += (Math.floor((Math.pow(i, 3) * 0.1) + (Math.pow(i, 2) * 8) + (i * matchedSymbol.data[0]) + matchedSymbol.data[1]) * 10000);
+			}
+		}
+		
+		symbol_cost -= curAmount;
+		
+		symbol_cost = AddComma(symbol_cost);
+		meso_cost = AddComma(meso_cost);
+		
+		let message = "";
+		
+		message = `< 심볼 비용 계산기 결과 >\n기능: 2번 / 특정 심볼의 현재 레벨과 수치에서 목표 레벨까지의 강화 비용 및 요구 심볼 수 계산\n\n`;
+		message = `${message}[ ${matchedSymbol.name} ]\n요구 심볼 수: ${symbol_cost}개\n강화 비용: ${meso_cost}메소`;
+		
+		result = {
+			success: true,
+			result: encodeURIComponent(message)
+		}
+	}
+	
+	res.status(200).json(result);
+});
+
+app.get('/event', async (req, res) => {
+	try {
+		const url = "https://maplestory.nexon.com/News/Event";
+		
+		console.log("show event list");
+		
+		const response = await axios.get(url);
+		const html = response.data;
+		const $ = cheerio.load(html);
+		
+		let message = "< 현재 진행중인 이벤트 >";
+		
+		$('div[class=event_board] ul li').each((index, element) => {
+			let eventName = $(element).find('dd.data p a').text();
+			let eventPeriod = $(element).find('dd.date p').text();
+			message = `${message}\n\n[${eventName}]\n${eventPeriod}`;
+		});
+		
+		res.status(200).json({
+			success: true,
+			result: encodeURIComponent(message)
+		});
+		
+	} catch(error) {
+		res.status(200).json({
+			success: false,
+			result: encodeURIComponent(error)
+		});
+	}
+});
+
+app.get('/cashShop', async (req, res) => {
+	try {
+		const url = "https://maplestory.nexon.com/News/CashShop";
+		
+		console.log("show cash shop list");
+		
+		const response = await axios.get(url);
+		const html = response.data;
+		const $ = cheerio.load(html);
+		
+		let message = "< 현재 캐시샵에서 판매중인 상품 >";
+		
+		$('div[class=cash_board] ul li').each((index, element) => {
+			let eventName = $(element).find('dd.data p a').text().split("업데이트")[1].trim();
+			let eventPeriod = $(element).find('dd.date p').text();
+			message = `${message}\n\n[${eventName}]\n${eventPeriod}`;
+		});
+		
+		res.status(200).json({
+			success: true,
+			result: encodeURIComponent(message)
+		});
+		
+	} catch(error) {
+		res.status(200).json({
+			success: false,
+			result: encodeURIComponent(error)
+		});
+	}
+});
+
 function AddComma(data_value) {
 	var txtNumber = '' + data_value; // 입력된 값을 문자열 변수에 저장합니다.
 
