@@ -996,7 +996,90 @@ app.get('/expHistory/:name', async (req, res) => {
 				let message = `<[${name}]의 경험치 히스토리>`;
 				
 				for(let i = 0; i < resultData.length; i++) {
-					message = `${message}\n${resultData[i].date}: Lv${resultData[i].level} ${resultData[i].step}%`;
+					message = `${message}\n${resultData[i].date}: Lv.${resultData[i].level} (${resultData[i].step}%)`;
+				}
+				
+				res.status(200).json({
+					success: true,
+					result: encodeURIComponent(message)
+				});
+			}
+			else {
+				res.status(200).json({
+					success: false,
+					result: "경험치 히스토리가 존재하지 않습니다."
+				});
+			}
+		} else {    
+			res.status(200).json({
+				success: false,
+				result: "캐릭터 정보가 없거나, maple.gg에서 조회되지 않았습니다. 다시 시도해 주세요.\n\n(공식 홈페이지와의 데이터 동기화가 이루어지지 않았을 가능성도 있습니다.)"
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(200).json({
+			success: false,
+			result : "봇 서버 오류입니다. 관리자에게 \"/건의\" 명령어를 통해 문의해 주세요."
+		});
+	}
+});
+
+app.get('/levHistory/:name', async (req, res) => {
+	const { name } = req.params;
+	
+	try {
+		const url = `https://maple.gg/u/${name}`;
+		console.log(`levHistories: ${url}`);
+		
+		const response = await axios.get(url);
+		
+		const html = response.data;
+		const $ = cheerio.load(html);
+		let found = false;
+		
+		let targetScript = null;
+		$('script').each((index, element) => {
+			const scriptContent = $(element).html();
+			if(found) {
+				targetScript = scriptContent;
+				return false;
+			}
+			else {
+				if (scriptContent && scriptContent.includes('bindto: \'#exp-chart\'')) {
+					found = true;
+				}
+			}
+		});
+		
+		if(targetScript) {
+			let hasHistory = false;
+			
+			const levHistoriesMatch = targetScript.match(/columns:\s*(\[\[.*?\]\])/);
+			
+			let levHistories = [];
+			
+			if(levHistoriesMatch && levHistoriesMatch[1]) {
+				levHistories = JSON.parse(levHistoriesMatch[1]);
+				hasHistory = true;
+			}
+			
+			if(hasHistory) {
+				let resultData = [];
+			
+				for(let i = 1; i < levHistories[0].length; i++) {
+					let date = levHistories[0][i];
+					let level = levHistories[1][i];
+					resultData.push({
+						date: date,
+						level: level,
+					});
+				}
+				
+				let message = `<[${name}]의 레벨 히스토리>`;
+				
+				for(let i = 0; i < resultData.length; i++) {
+					message = `${message}\nLv.${resultData[i].level}: ${resultData[i].date}`;
 				}
 				
 				res.status(200).json({
@@ -1420,6 +1503,33 @@ app.get('/cashShop', async (req, res) => {
 			result: encodeURIComponent(error)
 		});
 	}
+});
+
+app.get('/randomChannel', async (req, res) => {
+	let randomChannel = pickRandNum(1, 39);
+	
+	let randomMessage = [
+		`오늘? ${randomChannel}채널 여기 맛있다`,
+		`오늘은 ${randomChannel}채널 맛도리다 ㄹㅇ임`,
+		`${randomChannel}채 가보쉴?`,
+		`오늘은 ${randomChannel}채널이 어떨까요?`,
+		`${randomChannel}채가서 그-대한 공포좀 먹으십쇼`,
+		`${randomChannel}채가면 커포링 날카롭다!`,
+		`${randomChannel}채가면 고근 뜰거임`,
+		`${randomChannel}채가면 가엔링 뜸`,
+		`${randomChannel}채가서 루컨마먹고 저좀 주세요`,
+		`${randomChannel}채 마력이 가득찬 숲 갔다가 데미안 가서 마깃안 ㄱㄱ`,
+		`${randomChannel}채가면 몽벨 ㅆㄱㄴ`,
+		`${randomChannel}채가면 마도서 먹나?`,
+	];
+	
+	let randomMessageIndex = pickRandNum(0, randomMessage.length - 1);
+	
+	let message = randomMessage[randomMessageIndex];
+	res.status(200).json({
+		success: true,
+		result: encodeURIComponent(message)
+	});
 });
 
 function AddComma(data_value) {
