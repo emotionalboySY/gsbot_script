@@ -2039,6 +2039,284 @@ app.get('/extreme/:curLev/:iteration', async (req, res) => {
 	}
 });
 
+app.get('/seedRing/:mode/:iteration', async (req, res) => {
+	try {
+		const mode = Number(req.params.mode);
+		const iteration = Number(req.params.iteration);
+
+		let result = {};
+
+		if (iteration > 1000) {
+			let message = '특수 스킬 반지 시뮬레이션은 최대 1,000회까지만 가능합니다.';
+			result = {
+				success: false,
+				result: encodeURIComponent(message),
+			};
+		} else {
+			let ring_list = [
+				{
+					index: 0,
+					cumulativeProb: [0.0211268, 0.0692308, 0.125, 0.1428571],
+					name: '리스트레인트 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 1,
+					cumulativeProb: [0.0422536, 0.1384616, 0.125, 0.2857142],
+					name: '컨티뉴어스 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 2,
+					cumulativeProb: [0.0704226, 0.2000001, 0.3333333, 0.3650793],
+					name: '웨폰퍼프 - S링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 3,
+					cumulativeProb: [0.0985916, 0.2615386, 0.4166666, 0.4444444],
+					name: '웨폰퍼프 - I링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 4,
+					cumulativeProb: [0.1267606, 0.3230771, 0.4999999, 0.5238095],
+					name: '웨폰퍼프 - L링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 5,
+					cumulativeProb: [0.1549296, 0.3846156, 0.5833332, 0.6031746],
+					name: '웨폰퍼프 - D링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 6,
+					cumulativeProb: [0.1830986, 0.4461541, 0.6666665, 0.6825397],
+					name: '얼티메이덤 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 7,
+					cumulativeProb: [0.2112676, 0.5076926, 0.7499998, 0.7619048],
+					name: '리스크테이커 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 8,
+					cumulativeProb: [0.2394366, 0.5692311, 0.8333331, 0.8412699],
+					name: '링 오브 썸',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 9,
+					cumulativeProb: [0.2676056, 0.6307696, 0.9166664, 0.920635],
+					name: '크리데미지 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 10,
+					cumulativeProb: [0.2957746, 0.6923081, 1, 1],
+					name: '크라이시스 - HM링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 11,
+					cumulativeProb: [0.3309859, 0.7076927, 0, 0],
+					name: '버든리프트 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 12,
+					cumulativeProb: [0.3661972, 0.7230773, 0, 0],
+					name: '오버패스 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 13,
+					cumulativeProb: [0.4014085, 0.7384619, 0, 0],
+					name: '레벨퍼프 - S링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 14,
+					cumulativeProb: [0.4366198, 0.7538465, 0, 0],
+					name: '레벨퍼프 - I링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 15,
+					cumulativeProb: [0.4718311, 0.7692311, 0, 0],
+					name: '레벨퍼프 - L링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 16,
+					cumulativeProb: [0.5070424, 0.7846157, 0, 0],
+					name: '레벨퍼프 - D링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 17,
+					cumulativeProb: [0.5422537, 0.8000003, 0, 0],
+					name: '헬스컷 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 18,
+					cumulativeProb: [0.577465, 0.8153849, 0, 0],
+					name: '크리디펜스 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 19,
+					cumulativeProb: [0.6126763, 0.8307695, 0, 0],
+					name: '리밋 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 20,
+					cumulativeProb: [0.6478876, 0.8461541, 0, 0],
+					name: '듀라빌리티 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 21,
+					cumulativeProb: [0.6830989, 0.8615387, 0, 0],
+					name: '리커버디펜스 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 22,
+					cumulativeProb: [0.7183102, 0.8769233, 0, 0],
+					name: '실드스와프 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 23,
+					cumulativeProb: [0.7535215, 0.8923079, 0, 0],
+					name: '마나컷 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 24,
+					cumulativeProb: [0.7887328, 0.9076925, 0, 0],
+					name: '크라이시스 - H링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 25,
+					cumulativeProb: [0.8239441, 0.9230771, 0, 0],
+					name: '크라이시스 - M링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 26,
+					cumulativeProb: [0.8591554, 0.9384617, 0, 0],
+					name: '크리쉬프트 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 27,
+					cumulativeProb: [0.8943667, 0.9538463, 0, 0],
+					name: '스탠스쉬프트 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 28,
+					cumulativeProb: [0.929578, 0.9692309, 0, 0],
+					name: '리커버스탠스 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 29,
+					cumulativeProb: [0.9647893, 0.9846155, 0, 0],
+					name: '스위프트 링',
+					time: [0, 0, 0, 0, 0],
+				},
+				{
+					index: 30,
+					cumulativeProb: [1, 1, 0, 0],
+					name: '리플렉티브 링',
+					time: [0, 0, 0, 0, 0],
+				},
+			];
+
+			let level_list = [
+				{ index: 0, cumulativeProb: [0.5, 0.4, 0.25, 0] },
+				{ index: 1, cumulativeProb: [0.91, 0.7, 0.5, 0] },
+				{ index: 2, cumulativeProb: [1, 0.9, 0.8, 0.65] },
+				{ index: 3, cumulativeProb: [0, 1, 1, 1] },
+			];
+			let randomLevel;
+
+			for (let i = 0; i < iteration; i++) {
+				let pick = Math.random();
+				let ringPick = Math.random();
+
+				for (let i = 0; i < level_list.length; i++) {
+					if (pick < level_list[i].cumulativeProb[mode]) {
+						randomLevel = level_list[i].index + 1;
+						break;
+					}
+				}
+
+				for (const probConfig of ring_list) {
+					if (ringPick < probConfig.cumulativeProb[mode]) {
+						ring_list[probConfig.index].time[randomLevel]++;
+						break;
+					}
+				}
+			}
+
+			let iteration_locale = AddComma(iteration);
+			let ringLabel = '';
+
+			switch (mode) {
+				case 0:
+					ringLabel = '녹옥';
+					break;
+				case 1:
+					ringLabel = '홍옥';
+					break;
+				case 2:
+					ringLabel = '흑옥';
+					break;
+				case 3:
+					ringLabel = '백옥';
+					break;
+				default:
+					break;
+			}
+
+			let message = `<${ringLabel}의 보스 반지 상자 시뮬레이션 결과>\n시도 횟수: ${iteration_locale}회\n\n`;
+
+			for (const ringData of ring_list) {
+				for (let i = 1; i <= 4; i++) {
+					if (ringData.time[i] != 0) {
+						message += `${ringData.name} ${i}레벨: ${ringData.time[i]}회\n`;
+					}
+				}
+			}
+
+			result = {
+				success: true,
+				result: encodeURIComponent(message),
+			};
+		}
+
+		res.status(200).json(result);
+	} catch (error) {
+		let message = `서버 오류입니다. 관리자에게 문의해 주세요.\n\nerror: ${error}`;
+
+		console.log(error);
+		res.status(200).json({
+			success: false,
+			result: encodeURIComponent(message),
+		});
+	}
+});
+
 function AddComma(data_value) {
 	var txtNumber = '' + data_value; // 입력된 값을 문자열 변수에 저장합니다.
 
