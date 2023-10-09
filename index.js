@@ -18,6 +18,109 @@ app.get('/test', (req, res) => {
 	});
 });
 
+const expAmount = [
+	{lev: 200, exp: 2207026470},
+	{lev: 201, exp: 2471869646},
+	{lev: 202, exp: 2768494003},
+	{lev: 203, exp: 3100713283},
+	{lev: 204, exp: 3472798876},
+	{lev: 205, exp: 3889534741},
+	{lev: 206, exp: 4356278909},
+	{lev: 207, exp: 4879032378},
+	{lev: 208, exp: 5464516263},
+	{lev: 209, exp: 6120258214},
+	{lev: 210, exp: 7956335678},
+	{lev: 211, exp: 8831532602},
+	{lev: 212, exp: 9803001188},
+	{lev: 213, exp: 10881331318},
+	{lev: 214, exp: 12078277762},
+	{lev: 215, exp: 15701761090},
+	{lev: 216, exp: 17114919588},
+	{lev: 217, exp: 18655262350},
+	{lev: 218, exp: 20334235961},
+	{lev: 219, exp: 22164317197},
+	{lev: 220, exp: 28813612356},
+	{lev: 221, exp: 30830565220},
+	{lev: 222, exp: 32988704785},
+	{lev: 223, exp: 35297914119},
+	{lev: 224, exp: 37768768107},
+	{lev: 225, exp: 49099398539},
+	{lev: 226, exp: 52536356436},
+	{lev: 227, exp: 56213901386},
+	{lev: 228, exp: 60148874483},
+	{lev: 229, exp: 64359295696},
+	{lev: 230, exp: 83667084404},
+	{lev: 231, exp: 86177096936},
+	{lev: 232, exp: 88762409844},
+	{lev: 233, exp: 91425282139},
+	{lev: 234, exp: 94168040603},
+	{lev: 235, exp: 122418452783},
+	{lev: 236, exp: 126091006366},
+	{lev: 237, exp: 129873736556},
+	{lev: 238, exp: 133769948652},
+	{lev: 239, exp: 137783047111},
+	{lev: 240, exp: 179117961244},
+	{lev: 241, exp: 184491500081},
+	{lev: 242, exp: 190026245083},
+	{lev: 243, exp: 195727032435},
+	{lev: 244, exp: 201598843408},
+	{lev: 245, exp: 262078496430},
+	{lev: 246, exp: 269940851322},
+	{lev: 247, exp: 278039076861},
+	{lev: 248, exp: 286380249166},
+	{lev: 249, exp: 294971656640},
+	{lev: 250, exp: 442457484960},
+	{lev: 251, exp: 455731209508},
+	{lev: 252, exp: 469403145793},
+	{lev: 253, exp: 483485240166},
+	{lev: 254, exp: 497989797370},
+	{lev: 255, exp: 512929491291},
+	{lev: 256, exp: 528317376029},
+	{lev: 257, exp: 544166897309},
+	{lev: 258, exp: 560491904228},
+	{lev: 259, exp: 577306661354},
+	{lev: 260, exp: 1731919984062},
+	{lev: 261, exp: 1749239183902},
+	{lev: 262, exp: 1766731575741},
+	{lev: 263, exp: 1784398891498},
+	{lev: 264, exp: 1802242880412},
+	{lev: 265, exp: 2342915744535},
+	{lev: 266, exp: 2366344901980},
+	{lev: 267, exp: 2390008350999},
+	{lev: 268, exp: 2413908434508},
+	{lev: 269, exp: 2438047518853},
+	{lev: 270, exp: 5412465491853},
+	{lev: 271, exp: 5466590146771},
+	{lev: 272, exp: 5521256048238},
+	{lev: 273, exp: 5576468608720},
+	{lev: 274, exp: 5632233294807},
+	{lev: 275, exp: 11377111255510},
+	{lev: 276, exp: 12514822381061},
+	{lev: 277, exp: 13766304619167},
+	{lev: 278, exp: 15142935081083},
+	{lev: 279, exp: 16657228589191},
+	{lev: 280, exp: 33647601750165},
+	{lev: 281, exp: 37012361925181},
+	{lev: 282, exp: 40713598117699},
+	{lev: 283, exp: 44784957929468},
+	{lev: 284, exp: 49263453722414},
+	{lev: 285, exp: 99512176519276},
+	{lev: 286, exp: 109463394171203},
+	{lev: 287, exp: 120409733588323},
+	{lev: 288, exp: 132450706947155},
+	{lev: 289, exp: 145695777641870},
+	{lev: 290, exp: 294305470836577},
+	{lev: 291, exp: 323736017920234},
+	{lev: 292, exp: 356109619712257},
+	{lev: 293, exp: 391720581683482},
+	{lev: 294, exp: 430892639851830},
+	{lev: 295, exp: 870403132500696},
+	{lev: 296, exp: 957443445750765},
+	{lev: 297, exp: 1053187790325841},
+	{lev: 298, exp: 1158506569358425},
+	{lev: 299, exp: 1737759854037637}
+];
+
 app.get('/boss/:diff/:name', (req, res) => {
 	let { diff, name } = req.params;
 	let success = false;
@@ -914,7 +1017,7 @@ app.get('/ggSync/:name', async (req, res) => {
 	const page = await browser.newPage();
 	
 	const url = `https://maple.gg/u/${name}`;
-	console.log(url);
+	console.log(`ggSync: ${url}`);
 	
 	try {
 		await page.goto(url);
@@ -925,8 +1028,6 @@ app.get('/ggSync/:name', async (req, res) => {
 			'document.readyState === "complete"',
 			{ timeout: 30000}
 		);
-		
-		console.log("Page has been refreshed!");
 		res.status(200).json({
 			success: true,
 		});
@@ -945,7 +1046,7 @@ app.get('/expHistory/:name', async (req, res) => {
 	
 	try {
 		const url = `https://maple.gg/u/${name}`;
-		console.log(`expHistories: ${url}`);
+		console.log(`expHistory: ${url}`);
 		
 		const response = await axios.get(url);
 		
@@ -1030,7 +1131,7 @@ app.get('/levHistory/:name', async (req, res) => {
 	
 	try {
 		const url = `https://maple.gg/u/${name}`;
-		console.log(`levHistories: ${url}`);
+		console.log(`levHistory: ${url}`);
 		
 		const response = await axios.get(url);
 		
@@ -1530,6 +1631,412 @@ app.get('/randomChannel', async (req, res) => {
 		success: true,
 		result: encodeURIComponent(message)
 	});
+});
+
+app.get('/union/:name', async (req, res) => {
+	try {
+		const { name } = req.params;
+		
+		let message = `<[${name}]의 유니온 정보>\n\n`;
+		
+		let url = `https://maple.gg/u/${name}`;
+		console.log(`union: ${url}`);
+		let response = await axios.get(url);
+		
+		let data = response.data;
+		
+		let $ = cheerio.load(data);
+		
+		$('div.row.text-center div.col-lg-3.col-6.mt-3.px-1').each((index, element) => {
+			// console.log(index);
+			if(index == 2) {
+				if($(element).find("div.user-summary-no-data").length > 0) {
+					message = `정보가 없습니다. (정보 조회는 성공하였으나, 유니온 정보가 없어 부 캐릭터일 가능성이 높습니다.)`
+				}
+				else {				
+					let levLabel = $(element).find("div.user-summary-tier-string.font-weight-bold").text();
+					let levNumber = $(element).find("span.user-summary-level").text();
+					let power = Number($(element).find("div.d-block.mb-1 span").text().split(" ")[1].replace(/,/g, ""));
+					let dailyCoin = Math.round((power * 86400) / 100000000000);
+					let worldRanking = $(element).find("div.mb-2").text().split("위")[0].trim() + "위";
+					let ranking = $(element).find("div.mb-2").text().split("위")[1].trim() + "위";
+				
+					message += `${levNumber} (${levLabel})\n\n전투력: ${AddComma(power.toString())}\n일일 코인 획득량: ${dailyCoin}개\n\n${worldRanking.replace(" ", ": ")}\n${ranking.replace(" ", ": ")}`;	
+				}
+				
+				return false;
+			}
+		});
+		
+		res.status(200).json({
+			success: true,
+			result: encodeURIComponent(message)
+		});
+		
+	} catch (error) {
+		let message = `서버 오류입니다. 관리자에게 문의해 주세요.\n\nerror: ${error}`;
+		
+		console.log(error);
+		res.status(200).json({
+			success: false,
+			result: encodeURIComponent(message)
+		});
+	}
+});
+
+app.get('/mureungHistory/:name', async (req, res) => {
+	const { name } = req.params;
+	
+	try {
+		const url = `https://maple.gg/u/${name}`;
+		console.log(`mrHistory: ${url}`);
+		const response = await axios.get(url);
+		const $ = cheerio.load(response.data);
+		
+		let mrHistory = [];
+		
+		$('tbody#dohangHistoryTbody tr').each((index, element) => {
+			let date, floor, time, job, level;
+			$(element).find('td').each((index, element) => {
+				switch(index) {
+					case 0:
+						date = $(element).text().trim();
+						const matches = date.match(/(\d+)년\s*(\d+)월\s*(\d+)일/);
+						const year = matches[1];
+						const month = matches[2].padStart(2, '0'); // Ensure it's two digits
+						const day = matches[3].padStart(2, '0');   // Ensure it's two digits
+						
+						date = `${year}-${month}-${day}`;
+						break;
+					case 1:
+						floor = $(element).find('h5.d-block.mb-1').text().trim();
+						time = $(element).find('span.d-block').text().trim();
+						break;
+					case 3:
+						job = $(element).find('span.d-block').text().trim();
+						level = $(element).find('small').text().trim();
+						break;
+					default:
+						break;
+				}	
+			});
+			mrHistory.push({
+				date: date,
+				floor: floor,
+				time: time,
+				job: job,
+				level: level
+			});
+		});
+		
+		mrHistory = mrHistory.reverse();
+		
+		let message = `<[${name}]의 무릉 히스토리>`;
+		
+		for(let i = 0; i < mrHistory.length; i++) {
+			message += `\n\n- ${mrHistory[i].date}\n${mrHistory[i].floor}(${mrHistory[i].time}) | ${mrHistory[i].job} ${mrHistory[i].level}`;
+		}
+		
+		res.status(200).json({
+			success: true,
+			result: message
+		});
+	} catch (error) {
+		let message = `서버 오류입니다. 관리자에게 문의해 주세요.\n\nerror: ${error}`;
+		
+		console.log(error);
+		res.status(200).json({
+			success: false,
+			result: encodeURIComponent(message)
+		});
+	}
+});
+
+app.get('/extreme/:curLev/:iteration', async (req, res) => {
+	try {
+		const curLev = Number(req.params.curLev);
+		const iteration = Number(req.params.iteration);
+
+		let result = {};
+		let message = `[익스트림 성장의 비약 시뮬레이션 결과]\n시작레벨: ${curLev}\n사용횟수: ${iteration}회\n\n`;
+
+		if (iteration > 500) {
+			result = {
+				success: false,
+				result:
+					'익성비 시뮬레이션은 서버 과부하 방지를 위해 최대 500회까지 사용 가능합니다.',
+			};
+		} else if(curLev < 141 || curLev > 299) {
+			result = {
+				success: false,
+				result: '익성비 시뮬레이션은 레벨 141 ~ 299 구간에서만 사용 가능합니다.'
+			};
+		} else {
+			let lev = curLev;
+			let extream_pbt = [];
+			let temp = 0;
+			let res = 0;
+			let remain_iter;
+			let i = 0;
+			let isUnder200 = true;
+
+			if (lev >= 200) {
+				isUnder200 = false;
+			}
+			if (isUnder200) {
+				for (i = 1; i <= iteration; i++) {
+					let extream_randNum = Math.floor(Math.random() * 99 + 1);
+					switch (lev) {
+						case 141:
+							extream_pbt = [0, 5, 5, 5, 5, 5, 5, 10, 20, 20, 20];
+							break;
+						case 142:
+							extream_pbt = [0, 5, 5, 5, 5, 5, 10, 10, 20, 20, 15];
+							break;
+						case 143:
+							extream_pbt = [0, 5, 5, 5, 5, 5, 10, 20, 15, 15, 15];
+							break;
+						case 144:
+							extream_pbt = [0, 5, 5, 5, 5, 5, 20, 10, 15, 15, 15];
+							break;
+						case 145:
+							extream_pbt = [0, 5, 5, 5, 10, 10, 10, 10, 15, 15, 15];
+							break;
+						case 146:
+							extream_pbt = [0, 5, 5, 5, 10, 10, 10, 15, 15, 15, 10];
+							break;
+						case 147:
+							extream_pbt = [0, 5, 5, 5, 10, 10, 15, 15, 15, 10, 10];
+							break;
+						case 148:
+							extream_pbt = [0, 5, 5, 5, 10, 15, 15, 15, 10, 10, 10];
+							break;
+						case 149:
+							extream_pbt = [0, 5, 5, 10, 10, 15, 15, 10, 10, 10, 10];
+							break;
+						case 150:
+							extream_pbt = [0, 5, 5, 10, 15, 10, 15, 10, 10, 10, 10];
+							break;
+						case 151:
+							extream_pbt = [0, 5, 5, 10, 10, 15, 20, 10, 10, 10, 5];
+							break;
+						case 152:
+							extream_pbt = [0, 5, 5, 10, 10, 20, 15, 15, 10, 5, 5];
+							break;
+						case 153:
+							extream_pbt = [0, 5, 5, 10, 15, 15, 20, 10, 10, 5, 5];
+							break;
+						case 154:
+							extream_pbt = [0, 5, 5, 10, 20, 20, 10, 10, 10, 5, 5];
+							break;
+						case 155:
+							extream_pbt = [0, 5, 10, 10, 20, 15, 10, 10, 10, 5, 5];
+							break;
+						case 156:
+							extream_pbt = [0, 10, 10, 10, 15, 15, 10, 10, 10, 5, 5];
+							break;
+						case 157:
+							extream_pbt = [0, 10, 10, 15, 15, 10, 10, 10, 10, 5, 5];
+							break;
+						case 158:
+							extream_pbt = [0, 10, 15, 15, 10, 10, 10, 10, 10, 5, 5];
+							break;
+						case 159:
+							extream_pbt = [0, 15, 20, 5, 10, 10, 10, 10, 10, 5, 5];
+							break;
+						case 160:
+							extream_pbt = [0, 15, 10, 15, 15, 10, 10, 10, 5, 5, 5];
+							break;
+						case 161:
+							extream_pbt = [0, 15, 15, 15, 10, 10, 10, 10, 5, 5, 5];
+							break;
+						case 162:
+							extream_pbt = [0, 20, 15, 10, 10, 10, 10, 10, 5, 5, 5];
+							break;
+						case 163:
+							extream_pbt = [0, 15, 20, 15, 10, 10, 10, 5, 5, 5, 5];
+							break;
+						case 164:
+							extream_pbt = [0, 20, 20, 10, 10, 10, 10, 5, 5, 5, 5];
+							break;
+						case 165:
+							extream_pbt = [0, 20, 20, 15, 10, 10, 5, 5, 5, 5, 5];
+							break;
+						case 166:
+							extream_pbt = [0, 20, 15, 15, 15, 10, 10, 5, 5, 5];
+							break;
+						case 167:
+							extream_pbt = [0, 20, 20, 15, 10, 10, 10, 5, 5, 5];
+							break;
+						case 168:
+							extream_pbt = [0, 20, 25, 10, 10, 10, 10, 5, 5, 5];
+							break;
+						case 169:
+							extream_pbt = [0, 25, 20, 10, 10, 10, 10, 5, 5, 5];
+							break;
+						case 170:
+							extream_pbt = [0, 25, 20, 15, 10, 10, 5, 5, 5, 5];
+							break;
+						case 171:
+							extream_pbt = [0, 25, 20, 10, 15, 10, 10, 5, 5];
+							break;
+						case 172:
+							extream_pbt = [0, 25, 20, 15, 15, 10, 5, 5, 5];
+							break;
+						case 173:
+							extream_pbt = [0, 25, 25, 15, 10, 10, 5, 5, 5];
+							break;
+						case 174:
+							extream_pbt = [0, 25, 30, 10, 10, 10, 5, 5, 5];
+							break;
+						case 175:
+							extream_pbt = [0, 30, 20, 20, 10, 5, 5, 5, 5];
+							break;
+						case 176:
+							extream_pbt = [0, 25, 20, 25, 10, 10, 5, 5];
+							break;
+						case 177:
+							extream_pbt = [0, 30, 20, 20, 10, 10, 5, 5];
+							break;
+						case 178:
+							extream_pbt = [0, 30, 25, 15, 10, 10, 5, 5];
+							break;
+						case 179:
+							extream_pbt = [0, 30, 25, 20, 10, 5, 5, 5];
+							break;
+						case 180:
+							extream_pbt = [0, 35, 25, 20, 5, 5, 5, 5];
+							break;
+						case 181:
+							extream_pbt = [0, 35, 30, 15, 10, 5, 5];
+							break;
+						case 182:
+							extream_pbt = [0, 35, 35, 15, 5, 5, 5];
+							break;
+						case 183:
+							extream_pbt = [0, 40, 35, 10, 5, 5, 5];
+							break;
+						case 184:
+							extream_pbt = [0, 50, 25, 10, 5, 5, 5];
+							break;
+						case 185:
+							extream_pbt = [0, 55, 25, 5, 5, 5, 5];
+							break;
+						case 186:
+							extream_pbt = [0, 50, 30, 10, 5, 5];
+							break;
+						case 187:
+							extream_pbt = [0, 50, 35, 5, 5, 5];
+							break;
+						case 188:
+							extream_pbt = [0, 60, 25, 5, 5, 5];
+							break;
+						case 189:
+							extream_pbt = [0, 60, 25, 10, 5];
+							break;
+						case 190:
+							extream_pbt = [0, 55, 35, 10];
+							break;
+						case 191:
+							extream_pbt = [0, 60, 35, 5];
+							break;
+						case 192:
+							extream_pbt = [0, 65, 30, 5];
+							break;
+						case 193:
+							extream_pbt = [0, 65, 35];
+							break;
+						case 194:
+							extream_pbt = [0, 75, 25];
+							break;
+						case 195:
+							extream_pbt = [0, 80, 20];
+							break;
+						case 196:
+							extream_pbt = [0, 85, 15];
+							break;
+						case 197:
+							extream_pbt = [0, 90, 10];
+							break;
+						case 198:
+							extream_pbt = [0, 95, 5];
+							break;
+						case 199:
+							extream_pbt = [0, 100];
+							break;
+					}
+
+					for (let j = 1; j <= extream_pbt.length; j++) {
+						temp += extream_pbt[j];
+						if (temp >= extream_randNum) {
+							res = j;
+							break;
+						}
+					}
+
+					lev += res;
+					let iStr = i.toString().padStart(2, '0');
+					let resStr = res.toString().padStart(2, '0');
+					message += `${iStr}번째 시도: ${resStr}레벨업 -> Lv.${lev}\n`;
+					temp = 0;
+					if (lev == 200) {
+						break;
+					}
+				}
+			}
+			if (lev >= 200) {
+				remain_iter = iteration - i;
+				if (remain_iter > 0) {
+					if (isUnder200) {
+						message += `\n200레벨 달성으로 이후 199 -> 200에 해당하는 경험치를 획득합니다.`;
+					} else {
+						message += `시작 레벨이 200 이상인 경우, 199 -> 200에 해당하는 경험치로 시뮬레이션을 진행합니다.`;
+					}
+					let remain_exp = 571115568 * remain_iter;
+					let curExpAmount;
+					let resLevPercent;
+					let resLev;
+					while (true) {
+						if (remain_exp == 0) {
+							resLevPercent = 0;
+							resLev = lev;
+							break;
+						}
+						curExpAmount = expAmount.find((element) => element.lev == lev).exp;
+						if (remain_exp < curExpAmount) {
+							let resLevPercentRaw = (remain_exp / curExpAmount) * 100;
+							resLevPercent = resLevPercentRaw.toFixed(3);
+							resLev = lev;
+							break;
+						}
+						if (remain_exp >= curExpAmount) {
+							lev++;
+							remain_exp -= curExpAmount;
+						}
+					}
+					if (isUnder200) {
+						message += `\n\n남은 익성비 ${remain_iter}개를 사용한 결과:\nLv.${resLev} (${resLevPercent}%)`;
+					} else {
+						message += `\n\n익성비 ${remain_iter}개를 사용한 결과:\nLv.${resLev} (${resLevPercent}%)`;
+					}
+				}
+			}
+			result = {
+				success: true,
+				result: encodeURIComponent(message),
+			};
+		}
+
+		res.status(200).json(result);
+	} catch (error) {
+		let message = `서버 오류입니다. 관리자에게 문의해 주세요.\n\nerror: ${error}`;
+
+		console.log(error);
+		res.status(200).json({
+			success: false,
+			result: encodeURIComponent(message),
+		});
+	}
 });
 
 function AddComma(data_value) {
